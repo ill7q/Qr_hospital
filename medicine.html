@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medicine Information</title>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+<h1>Medicine</h1>
+<svg id="barcode"></svg>
+<div id="result"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const patientId = params.get("id");
+const drug = params.get("drug");
+const dose = params.get("dose");
+
+// Generate barcode automatically
+JsBarcode("#barcode", patientId, {format: "CODE128", displayValue: true});
+
+// Check if patient has scanned
+const scannedPatient = localStorage.getItem("scannedPatient");
+const resultDiv = document.getElementById("result");
+
+if (!scannedPatient) {
+  resultDiv.innerHTML = "❌ Please scan the patient barcode first!";
+} else if (scannedPatient === patientId) {
+  resultDiv.innerHTML = ✅ This medicine belongs to the patient: ${drug} ${dose};
+} else {
+  resultDiv.innerHTML = "⚠️ This medicine does not belong to this patient.";
+}
+</script>
+</body>
+</html>
