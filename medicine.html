@@ -1,37 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Medicine Information</title>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Medicine QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align:center; padding:20px; }
+    .barcode { margin:20px; }
+    #result { margin-top:20px; font-weight:bold; }
+  </style>
 </head>
 <body>
-<h1>Medicine</h1>
-<svg id="barcode"></svg>
-<div id="result"></div>
+  <h1>Medicine QR</h1>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const patientInfo = {
-  id: params.get("id"),
-  drug : params.get("drug"),
-  dose: params.get("dose"),
-};
+  <div class="barcode">
+    <svg id="medicineBarcode"></svg>
+  </div>
 
-// Generate barcode automatically
-JsBarcode("#barcode", patientId, {format: "CODE128", displayValue: true});
+  <div id="result"></div>
 
-// Check if patient has scanned
-const scannedPatient = localStorage.getItem("scannedPatient");
-const resultDiv = document.getElementById("result");
+  <script>
+    // قراءة بيانات الدواء من الرابط
+    const urlParams = new URLSearchParams(window.location.search);
 
-if (!scannedPatient) {
-  resultDiv.innerHTML = "❌ Please scan the patient barcode first!";
-} else if (scannedPatient === patientId) {
-  resultDiv.innerHTML = ✅ This medicine belongs to the patient: ${drug} ${dose};
-} else {
-  resultDiv.innerHTML = "⚠️ This medicine does not belong to this patient.";
-}
-</script>
+    const patientId = urlParams.get("id") || "unknown";
+    const drug = urlParams.get("drug") || "unknown";
+    const dose = urlParams.get("dose") || "unknown";
+
+    // إنشاء باركود معرف المريض للدواء
+    JsBarcode("#medicineBarcode", patientId, {
+      format: "CODE128",
+      displayValue: true
+    });
+
+    // التحقق إذا تم مسح الباركود الأول
+    const scannedPatient = localStorage.getItem("scannedPatient");
+    const resultDiv = document.getElementById("result");
+
+    if (!scannedPatient) {
+      resultDiv.innerHTML = "❌ Please scan the patient QR code first!";
+    } else if (scannedPatient === patientId) {
+      resultDiv.innerHTML = ✅ Medicine Info:<br>${drug} - ${dose};
+    } else {
+      resultDiv.innerHTML = "⚠️ This medicine does not belong to the scanned patient.";
+    }
+  </script>
 </body>
 </html>
+
