@@ -1,28 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Patient Information</title>
+  <meta charset="UTF-8">
+  <title>Patient QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align:center; padding:20px; }
+    .barcode { margin:20px; }
+    #result { margin-top:20px; font-weight:bold; }
+  </style>
 </head>
 <body>
-<h1>Patient Data</h1>
-<div id="info"></div>
+  <h1>Patient QR</h1>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const patientInfo = {
-  id: params.get("id"),
-  name: params.get("name"),
-  age: params.get("age"),
-  diag: params.get("diag")
-};
-document.getElementById("info").innerHTML = `
-  <p>ID: ${patientInfo.id}</p>
-  <p>Name: ${patientInfo.name}</p>
-  <p>Age: ${patientInfo.age}</p>
-  <p>Diagnosis: ${patientInfo.diag}</p>
-`;
-localStorage.setItem("scannedPatient", patientInfo.id);
-</script>
+  <div class="barcode">
+    <svg id="patientBarcode"></svg>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    // قراءة بيانات المريض من الرابط
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const patientId = urlParams.get("id") || "unknown";
+    const name = urlParams.get("name") || "unknown";
+    const age = urlParams.get("age") || "unknown";
+    const diagnosis = urlParams.get("diag") || "unknown";
+
+    // إنشاء باركود المريض
+    JsBarcode("#patientBarcode", patientId, {
+      format: "CODE128",
+      displayValue: true
+    });
+
+    // عرض البيانات
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = `
+      ✅ Patient Info:<br>
+      Name: ${name}<br>
+      Age: ${age}<br>
+      Diagnosis: ${diagnosis}
+    `;
+
+    // تخزين الـPatient ID في localStorage لمحاكاة مسح الباركود
+    localStorage.setItem("scannedPatient", patientId);
+  </script>
 </body>
 </html>
