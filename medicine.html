@@ -20,21 +20,17 @@
   <div id="result"></div>
 
   <script>
-    // قراءة بيانات الدواء من الرابط
     const urlParams = new URLSearchParams(window.location.search);
-
-    const patientId = urlParams.get("id") || "unknown";
+    const patientId = (urlParams.get("id") || "unknown").trim();
     const drug = urlParams.get("drug") || "unknown";
     const dose = urlParams.get("dose") || "unknown";
 
-    // إنشاء باركود معرف المريض للدواء
     JsBarcode("#medicineBarcode", patientId, {
       format: "CODE128",
       displayValue: true
     });
 
-    // التحقق إذا تم مسح الباركود الأول
-    const scannedPatient = localStorage.getItem("scannedPatient");
+    const scannedPatient = (localStorage.getItem("scannedPatient") || "").trim();
     const resultDiv = document.getElementById("result");
 
     if (!scannedPatient) {
