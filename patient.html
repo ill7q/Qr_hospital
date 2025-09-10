@@ -20,21 +20,17 @@
   <div id="result"></div>
 
   <script>
-    // قراءة بيانات المريض من الرابط
     const urlParams = new URLSearchParams(window.location.search);
-
     const patientId = urlParams.get("id") || "unknown";
     const name = urlParams.get("name") || "unknown";
     const age = urlParams.get("age") || "unknown";
     const diagnosis = urlParams.get("diag") || "unknown";
 
-    // إنشاء باركود المريض
     JsBarcode("#patientBarcode", patientId, {
       format: "CODE128",
       displayValue: true
     });
 
-    // عرض البيانات
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = `
       ✅ Patient Info:<br>
@@ -43,8 +39,8 @@
       Diagnosis: ${diagnosis}
     `;
 
-    // تخزين الـPatient ID في localStorage لمحاكاة مسح الباركود
-    localStorage.setItem("scannedPatient", patientId);
+    localStorage.setItem("scannedPatient", patientId.trim());
   </script>
 </body>
 </html>
+
